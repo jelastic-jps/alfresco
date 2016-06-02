@@ -1,7 +1,6 @@
 # Jelastic Alfresco Add-on
 
 This repository provides [Alfresco](http://www.alfresco.com/) add-on for Jelastic Platform.
-[![GET IT HOSTED](https://raw.githubusercontent.com/JelasticJPS/Alfresco/master/images/getithosted.png)](http://go.jelastic.com/test?hoster-select=1&theme=modern&app=https://raw.githubusercontent.com/JelasticJPS/Alfresco/master/Alfresco-5.1.json)
 
 **Alfresco** is an enterprise content management solution that you can use in the cloud, on-premise and both.
 
