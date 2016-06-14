@@ -5,7 +5,7 @@
 		"id": "alfresco",
 		"name": "Alfresco",
 		"version": "5.1",
-		"logo": "https://raw.githubusercontent.com/JelasticJPS/Alfresco/master/images/view.png",
+		"logo": "https://raw.githubusercontent.com/jelastic-jps/Alfresco/master/images/view.png",
 		"type": "java",
 		"homepage": "http://www.alfresco.com/",
 		"description": {
@@ -31,22 +31,22 @@
 				]
 			},
 			"deployments": [{
-					"archive": "https://media.githubusercontent.com/media/JelasticJPS/Alfresco/master/dumps/share.war",
+					"archive": "https://media.githubusercontent.com/media/jelastic-jps/Alfresco/master/dumps/share.war",
 					"name": "share-5.1.war",
 					"context": "share"
 				}, {
-					"archive": "https://media.githubusercontent.com/media/JelasticJPS/Alfresco/master/dumps/alfresco.war",
+					"archive": "https://media.githubusercontent.com/media/jelastic-jps/Alfresco/master/dumps/alfresco.war",
 					"name": "alfresco-5.1.war",
 					"context": "alfresco"
 				}
 			],
 			"upload": [{
 					"nodeMission": "cp",
-					"sourcePath": "https://raw.githubusercontent.com/JelasticJPS/Alfresco/master/libs/alfresco-global.properties",
+					"sourcePath": "https://raw.githubusercontent.com/jelastic-jps/Alfresco/master/libs/alfresco-global.properties",
 					"destPath": "${WEBAPPS}/alfresco/WEB-INF/classes/alfresco-global.properties"
 				}, {
 					"nodeMission": "cp",
-					"sourcePath": "https://raw.githubusercontent.com/JelasticJPS/Alfresco/master/libs/mysql-connector-java-5.0.8-bin.jar",
+					"sourcePath": "https://raw.githubusercontent.com/jelastic-jps/Alfresco/master/libs/mysql-connector-java-5.0.8-bin.jar",
 					"destPath": "${JAVA_LIB}/mysql-connector-java-5.0.8-bin.jar"
 				}
 			],
