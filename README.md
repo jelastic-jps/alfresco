@@ -1,4 +1,4 @@
-[![Alfresco](../images/view.png)](../../../alfresco)
+[![Alfresco](images/view.png)](../../../alfresco)
 ## Alfresco
 
 The JPS package deploys Alfresco that initially contains 1 application server and 1 database container. 
