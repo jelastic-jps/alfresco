@@ -31,11 +31,11 @@
 				]
 			},
 			"deployments": [{
-					"archive": "https://media.githubusercontent.com/media/jelastic-jps/alfresco/master/dumps/share.war",
+					"archive": "https://github.com/jelastic-jps/alfresco/blob/master/dumps/share.war",
 					"name": "share-5.1.war",
 					"context": "share"
 				}, {
-					"archive": "https://media.githubusercontent.com/media/jelastic-jps/alfresco/master/dumps/alfresco.war",
+					"archive": "https://github.com/jelastic-jps/alfresco/raw/master/dumps/alfresco.war",
 					"name": "alfresco-5.1.war",
 					"context": "alfresco"
 				}
