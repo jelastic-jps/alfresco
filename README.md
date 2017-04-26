@@ -9,7 +9,7 @@ Alfresco's open and tightly integrated ECM and BPM platform is simple, smart and
 
 ### Environment Topology
 
-![Alfresco Topology](https://docs.google.com/drawings/d/1npalDkrrNPmhyT6wHGF-oQhHv9KxBPCOip-OycsR08c/pub?w=505&h=216)
+![alfresco-environment-topology](images/alfresco-environment-topology.png)
 
 ### Specifics
 
