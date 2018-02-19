@@ -1,10 +1,10 @@
 {
-	"jpsVersion": "0.2",
+	"jpsVersion": "0.8",
 	"jpsType": "install",
 	"application": {
 		"id": "alfresco",
 		"name": "Alfresco",
-		"version": "5.1",
+		"version": "5.2",
 		"logo": "https://raw.githubusercontent.com/jelastic-jps/alfresco/master/images/view.png",
 		"type": "java",
 		"homepage": "http://www.alfresco.com/",
@@ -15,17 +15,17 @@
 		"env": {
 			"topology": {
 				"ha": false,
-				"engine": "java7",
+				"engine": "java8",
 				"ssl": false,
 				"nodes": [{
 						"extip": false,
 						"count": 1,
-						"cloudlets": 16,
+						"cloudlets": 8,
 						"nodeType": "tomcat7"
 					}, {
 						"extip": false,
 						"count": 1,
-						"cloudlets": 16,
+						"cloudlets": 8,
 						"nodeType": "mysql5"
 					}
 				]
