@@ -1,94 +1,111 @@
 {
-	"jpsVersion": "0.8",
-	"jpsType": "install",
-	"application": {
-		"id": "alfresco",
-		"name": "Alfresco",
-		"version": "5.2",
-		"logo": "https://raw.githubusercontent.com/jelastic-jps/alfresco/master/images/view.png",
-		"type": "java",
-		"homepage": "http://www.alfresco.com/",
-		"description": {
-			"en": "<p>Your Enterprise Content. Always in sync. The only enterprise content management solution that you can use in the cloud, on-premise and both.</p>"
-		},
-		"categories": ["apps/cms", "apps/content-management"],
-		"env": {
-			"topology": {
-				"ha": false,
-				"engine": "java8",
-				"ssl": false,
-				"nodes": [{
-						"extip": false,
-						"count": 1,
-						"cloudlets": 8,
-						"nodeType": "tomcat7"
-					}, {
-						"extip": false,
-						"count": 1,
-						"cloudlets": 8,
-						"nodeType": "mysql5"
-					}
-				]
-			},
-			"deployments": [{
-					"archive": "https://github.com/jelastic-jps/alfresco/raw/master/dumps/share.war",
-					"name": "share-5.1.war",
-					"context": "share"
-				}, {
-					"archive": "https://github.com/jelastic-jps/alfresco/raw/master/dumps/alfresco.war",
-					"name": "alfresco-5.1.war",
-					"context": "alfresco"
-				}
-			],
-			"upload": [{
-					"nodeMission": "cp",
-					"sourcePath": "https://raw.githubusercontent.com/jelastic-jps/alfresco/master/libs/alfresco-global.properties",
-					"destPath": "${WEBAPPS}/alfresco/WEB-INF/classes/alfresco-global.properties"
-				}, {
-					"nodeMission": "cp",
-					"sourcePath": "https://raw.githubusercontent.com/jelastic-jps/alfresco/master/libs/mysql-connector-java-5.0.8-bin.jar",
-					"destPath": "${JAVA_LIB}/mysql-connector-java-5.0.8-bin.jar"
-				}
-			],
-			"configs": [{
-					"nodeType": "mysql5",
-					"database": {
-						"name": "alfresco",
-						"user": "alfresco"
-					}
-				}, {
-					"nodeMission": "cp",
-					"path": "${WEBAPPS}/alfresco/WEB-INF/classes/alfresco-global.properties",
-					"replacements": [{
-							"pattern": "{DB_HOST}",
-							"replacement": "${nodes.mysql5.address}"
-						}, {
-							"pattern": "{DB_USER}",
-							"replacement": "${nodes.mysql5.database.user}"
-						}, {
-							"pattern": "{DB_PASSWORD}",
-							"replacement": "${nodes.mysql5.database.password}"
-						}, {
-							"pattern": "{DB_NAME}",
-							"replacement": "${nodes.mysql5.database.name}"
-						}
-					]
-				}, {
-					"nodeMission": "cp",
-					"restart": true,
-					"path": "/opt/tomcat/webapps/alfresco/index.jsp",
-					"replacements": [{
-							"pattern": "{HOSTNAME}",
-							"replacement": "${env.url}"
-						}
-					]
-				}
-			]
-		},
-		"startPage": "share/",
-		"success": {
-			"text": "Below you will find your admin panel link, username and password.</br></br> <table style='font-size:13px; border: none;'><tr><td>Admin panel URL:</td><td style='padding-left: 10px;'><a href='${env.protocol}://${env.domain}/alfresco/' target='_blank'>${env.protocol}://${env.domain}/alfresco/</a></td></tr>  <tr><td>Admin name:</td><td style='padding-left: 10px;'>admin</td></tr><tr><td>Password:</td><td style='padding-left: 10px;'>admin</td></tr></table></br>To bind a custom domain name with your Alfresco please refer to the steps described in Jelastic <a href='http://docs.jelastic.com/custom-domains' target='_blank'>documentation</a>",
-			"email": "Below you will find your admin panel link, username and password.</br></br> <table style='font-size:13px; border: none;'><tr><td>Admin panel URL:</td><td style='padding-left: 10px;'><a href='${env.protocol}://${env.domain}/alfresco/' target='_blank'>${env.protocol}://${env.domain}/alfresco/</a></td></tr>  <tr><td>Admin name:</td><td style='padding-left: 10px;'>admin</td></tr><tr><td>Password:</td><td style='padding-left: 10px;'>admin</td></tr></table></br>To bind a custom domain name with your Alfresco please refer to the steps described in Jelastic <a href='http://docs.jelastic.com/custom-domains' target='_blank'>documentation</a>"
-		}
-	}
+  "jpsVersion": "0.8",
+  "jpsType": "install",
+  "application": {
+    "id": "alfresco",
+    "name": "Alfresco",
+    "version": "5.2",
+    "logo": "https://raw.githubusercontent.com/jelastic-jps/alfresco/master/images/view.png",
+    "type": "java",
+    "homepage": "http://www.alfresco.com/",
+    "description": {
+      "en": "<p>Your Enterprise Content. Always in sync. The only enterprise content management solution that you can use in the cloud, on-premise and both.</p>"
+    },
+    "categories": [
+      "apps/cms",
+      "apps/content-management"
+    ],
+    "env": {
+      "topology": {
+        "ha": false,
+        "engine": "java8",
+        "ssl": false,
+        "nodes": [
+          {
+            "extip": false,
+            "count": 1,
+            "cloudlets": 8,
+            "nodeType": "tomcat7"
+          },
+          {
+            "extip": false,
+            "count": 1,
+            "cloudlets": 8,
+            "nodeType": "mysql5"
+          }
+        ]
+      },
+      "configs": [
+        {
+          "nodeType": "mysql5",
+          "database": {
+            "name": "alfresco",
+            "user": "alfresco"
+          }
+        }
+      ]
+    },
+    "onInstall": [
+      {
+        "executeShellCommands": [
+          {
+            "commands": [
+              "curl -fsSL 'https://download.jelastic.com/public.php?service=files&t=7c0b0d8d7a5b84e4dc14a09adca692b3&download' -o /opt/tomcat/webapps/share.war",
+              "curl -fsSL 'https://download.jelastic.com/public.php?service=files&t=dff92717766644167e7d487b83040008&download' -o /opt/tomcat/webapps/alfresco.war",
+              "chown tomcat:tomcat /opt/tomcat/webapps/*.war",
+              "mkdir /opt/tomcat/amps_share && curl -fsSL 'https://download.jelastic.com/public.php?service=files&t=7c6d3c312c8a67f31431dd5509ef920f&download' -o /opt/tomcat/amps_share/alfresco-share-services.amp",
+              "curl -fsSL 'https://download.jelastic.com/public.php?service=files&t=0e5c297ab242822230ff92e3c164478c&download' -o /opt/tomcat/bin/alfresco-mmt.jar",
+              "echo '-DALFRESCO_ADDR=${nodes.mysql5.address}' >> /opt/tomcat/conf/variables.conf",
+              "echo '-DALFRESCO_PASS=${nodes.mysql5.database.password}' >> /opt/tomcat/conf/variables.conf"
+            ],
+            "nodeType": "tomcat7"
+          },
+          {
+            "commands": [
+              "java -jar /opt/tomcat/bin/alfresco-mmt.jar install /opt/tomcat/amps_share/alfresco-share-services.amp /opt/tomcat/webapps/share.war",
+              "java -jar /opt/tomcat/bin/alfresco-mmt.jar install /opt/tomcat/amps_share/alfresco-share-services.amp /opt/tomcat/webapps/alfresco.war"
+            ],
+            "user": "root",
+            "nodeType": "tomcat7"
+          }
+        ]
+      },
+      {
+        "upload": [
+          {
+            "nodeMission": "cp",
+            "sourcePath": "http://app.jelastic.com/xssu/cross/download/QjYYHA81VwNaVlRAYAw4TUMVCRBUShURWBZsHH8iIlYQQktYDwIBQmNTTEBI",
+            "destPath": "${JAVA_LIB}/mysql-connector-java-5.0.8-bin.jar"
+          }
+        ]
+      },
+      {
+        "executeShellCommands": [
+          {
+            "nodeType": "tomcat7",
+            "commands": [
+              "service tomcat stop 2>>/opt/tomcat/logs/catalina.out 1>>/opt/tomcat/logs/catalina.out"
+            ],
+            "user": "root"
+          },
+          {
+            "nodeType": "tomcat7",
+            "commands": [
+              "rm -rf /opt/tomcat/webapps/alfresco /opt/tomcat/webapps/share",
+              "chown -R tomcat:tomcat /opt/tomcat/webapps/alfresco.war",
+              "chown -R tomcat:tomcat /opt/tomcat/webapps/share.war"
+            ],
+            "user": "root"
+          }
+        ]
+      },
+      {
+        "restartNodes": {
+          "nodeType": "tomcat7"
+        }
+      }
+    ],
+    "startPage": "share/",
+    "success": "Below you will find your admin panel link, username and password.</br></br> <table style='font-size:13px; border: none;'><tr><td>Admin panel URL:</td><td style='padding-left: 10px;'><a href='${env.protocol}://${env.domain}/alfresco/' target='_blank'>${env.protocol}://${env.domain}/alfresco/</a></td></tr>  <tr><td>Admin name:</td><td style='padding-left: 10px;'>admin</td></tr><tr><td>Password:</td><td style='padding-left: 10px;'>admin</td></tr></table></br>To bind a custom domain name with your Alfresco please refer to the steps described in Jelastic <a href='http://docs.jelastic.com/custom-domains' target='_blank'>documentation</a>"
+  }
 }
