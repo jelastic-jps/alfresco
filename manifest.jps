@@ -29,22 +29,16 @@ onInstall:
       name: alfresco
       password: "${globals.DB_PASS}"
 - cmd [cp]:
-  - curl -fsSL 'https://download.jelastic.com/public.php?service=files&t=7c0b0d8d7a5b84e4dc14a09adca692b3&download'
-    -o /opt/tomcat/webapps/share.war
-  - curl -fsSL 'https://download.jelastic.com/public.php?service=files&t=dff92717766644167e7d487b83040008&download'
-    -o /opt/tomcat/webapps/alfresco.war
+  - curl -fsSL 'https://download.jelastic.com/public.php?service=files&t=7c0b0d8d7a5b84e4dc14a09adca692b3&download' -o /opt/tomcat/webapps/share.war
+  - curl -fsSL 'https://download.jelastic.com/public.php?service=files&t=dff92717766644167e7d487b83040008&download' -o /opt/tomcat/webapps/alfresco.war
   - chown tomcat:tomcat /opt/tomcat/webapps/*.war
-  - mkdir /opt/tomcat/amps_share && curl -fsSL 'https://download.jelastic.com/public.php?service=files&t=7c6d3c312c8a67f31431dd5509ef920f&download'
-    -o /opt/tomcat/amps_share/alfresco-share-services.amp
-  - curl -fsSL 'https://download.jelastic.com/public.php?service=files&t=0e5c297ab242822230ff92e3c164478c&download'
-    -o /opt/tomcat/bin/alfresco-mmt.jar
+  - mkdir /opt/tomcat/amps_share && curl -fsSL 'https://download.jelastic.com/public.php?service=files&t=7c6d3c312c8a67f31431dd5509ef920f&download' -o /opt/tomcat/amps_share/alfresco-share-services.amp
+  - curl -fsSL 'https://download.jelastic.com/public.php?service=files&t=0e5c297ab242822230ff92e3c164478c&download' -o /opt/tomcat/bin/alfresco-mmt.jar
   - echo '-DALFRESCO_ADDR=${nodes.mysql5.address}' >> /opt/tomcat/conf/variables.conf
   - echo '-DALFRESCO_PASS=${globals.DB_PASS}' >> /opt/tomcat/conf/variables.conf
 - cmd [cp]:
-  - java -jar /opt/tomcat/bin/alfresco-mmt.jar install /opt/tomcat/amps_share/alfresco-share-services.amp
-    /opt/tomcat/webapps/share.war
-  - java -jar /opt/tomcat/bin/alfresco-mmt.jar install /opt/tomcat/amps_share/alfresco-share-services.amp
-    /opt/tomcat/webapps/alfresco.war
+  - java -jar /opt/tomcat/bin/alfresco-mmt.jar install /opt/tomcat/amps_share/alfresco-share-services.amp /opt/tomcat/webapps/share.war
+  - java -jar /opt/tomcat/bin/alfresco-mmt.jar install /opt/tomcat/amps_share/alfresco-share-services.amp /opt/tomcat/webapps/alfresco.war
   user: root
 - upload [cp]:
   - sourcePath: http://app.jelastic.com/xssu/cross/download/QjYYHA81VwNaVlRAYAw4TUMVCRBUShURWBZsHH8iIlYQQktYDwIBQmNTTEBI
