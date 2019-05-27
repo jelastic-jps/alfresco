@@ -18,7 +18,7 @@ globals:
 
 engine: java8
 nodes:
-- cloudlets: 8
+- cloudlets: 24
   nodeType: tomcat7
 - cloudlets: 8
   nodeType: mysql5
