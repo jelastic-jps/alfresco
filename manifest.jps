@@ -16,7 +16,7 @@ categories:
 globals:
   DB_PASS: "${fn.password(6)}"
 
-engine: java8
+engine: openjdk8
 nodes:
 - cloudlets: 24
   nodeType: tomcat7
