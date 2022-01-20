@@ -19,7 +19,7 @@ globals:
 engine: openjdk8
 nodes:
 - cloudlets: 24
-  nodeType: tomcat7
+  nodeType: tomcat8
 - cloudlets: 8
   nodeType: mysql5
 
@@ -55,7 +55,7 @@ onInstall:
 
 - upload [cp]:
   - sourcePath: http://app.jelastic.com/xssu/cross/download/QjYYHA81VwNaVlRAYAw4TUMVCRBUShURWBZsHH8iIlYQQktYDwIBQmNTTEBI
-    destPath: "${JAVA_LIB}/mysql-connector-java-5.0.8-bin.jar"
+    destPath: "/opt/tomcat/lib/mysql-connector-java-5.0.8-bin.jar"
 
 - cmd [cp]:
   - service tomcat stop 2>>/opt/tomcat/logs/catalina.out 1>>/opt/tomcat/logs/catalina.out
@@ -72,8 +72,9 @@ onInstall:
 startPage: share/
 
 success: |-
-  Below you will find your admin panel link, username and password.</br></br>
-  <table style='font-size:13px; border: none;'>
-  <tr><td>Admin panel URL:</td><td style='padding-left: 10px;'><a href='${env.protocol}://${env.domain}/alfresco/' target='_blank'>${env.protocol}://${env.domain}/alfresco/</a></td></tr>
-  <tr><td>Admin name:</td><td style='padding-left: 10px;'>admin</td></tr><tr><td>Password:</td><td style='padding-left: 10px;'>admin</td></tr></table>
-  </br>To bind a custom domain name with your Alfresco please refer to the steps described in Jelastic <a href='http://docs.jelastic.com/custom-domains' target='_blank'>documentation</a>
+  Below you will find your admin panel link, username and password.  
+  Admin panel URL: [${env.protocol}://${env.domain}/alfresco/](${env.protocol}://${env.domain}/alfresco/)  
+  Admin name: admin  
+  Password: admin  
+  
+  To bind a custom domain name with your Alfresco please refer to the steps described in Jelastic [documentation](http://docs.jelastic.com/custom-domains)
