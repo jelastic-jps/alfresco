@@ -1,9 +1,6 @@
-jpsVersion: '0.8'
 type: install
-
 id: alfresco
 name: Alfresco
-version: '5.2'
 
 logo: https://raw.githubusercontent.com/jelastic-jps/alfresco/master/images/view.png
 homepage: http://www.alfresco.com/
@@ -13,61 +10,25 @@ categories:
 - apps/cms
 - apps/content-management
 
-globals:
-  DB_PASS: "${fn.password(6)}"
-
-engine: openjdk8
 nodes:
-- cloudlets: 24
-  nodeType: tomcat8
-- cloudlets: 8
-  nodeType: mysql5
+  nodeType: dockerengine
+  nodeGroup: cp
+  cloudlets: 32
+  displayName: Alfresco Server
 
-onInstall:
-- prepareSqlDatabase:
-  - nodeGroup: sqldb
-    loginCredentials:
-      user: root
-      password: "${nodes.sqldb.password}"
-    newDatabaseName: alfresco
-    newDatabaseUser:
-      name: alfresco
-      password: "${globals.DB_PASS}"
-- deploy:
-  - archive: https://download.jelastic.com/public.php?service=files&t=7c0b0d8d7a5b84e4dc14a09adca692b3&download
-    name: share.war
-    context: share
-  - archive: https://download.jelastic.com/public.php?service=files&t=dff92717766644167e7d487b83040008&download
-    name: alfresco.war
-    context: alfresco
+onInstall:    
+- cmd [cp]: |-
+    iptables -t nat -I PREROUTING -p tcp -m tcp --dport 443 -j REDIRECT --to-ports 8443
+    iptables -t nat -I PREROUTING -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8080
+    iptables-save
+    git clone https://github.com/Alfresco/acs-deployment.git
+    cd acs-deployment/docker-compose
+    docker-compose -f community-docker-compose.yml up -d
     
-- cmd [cp]:
-  - chown tomcat:tomcat /opt/tomcat/webapps/*.war
-  - mkdir /opt/tomcat/amps_share && curl -fsSL 'https://download.jelastic.com/public.php?service=files&t=7c6d3c312c8a67f31431dd5509ef920f&download' -o /opt/tomcat/amps_share/alfresco-share-services.amp
-  - curl -fsSL 'https://download.jelastic.com/public.php?service=files&t=0e5c297ab242822230ff92e3c164478c&download' -o /opt/tomcat/bin/alfresco-mmt.jar
-  - echo '-DALFRESCO_ADDR=${nodes.mysql5.address}' >> /opt/tomcat/conf/variables.conf
-  - echo '-DALFRESCO_PASS=${globals.DB_PASS}' >> /opt/tomcat/conf/variables.conf
-
-- cmd [cp]:
-  - java -jar /opt/tomcat/bin/alfresco-mmt.jar install /opt/tomcat/amps_share/alfresco-share-services.amp /opt/tomcat/webapps/share.war
-  - java -jar /opt/tomcat/bin/alfresco-mmt.jar install /opt/tomcat/amps_share/alfresco-share-services.amp /opt/tomcat/webapps/alfresco.war
-  user: root
-
-- upload [cp]:
-  - sourcePath: http://app.jelastic.com/xssu/cross/download/QjYYHA81VwNaVlRAYAw4TUMVCRBUShURWBZsHH8iIlYQQktYDwIBQmNTTEBI
-    destPath: "/opt/tomcat/lib/mysql-connector-java-5.0.8-bin.jar"
-
-- cmd [cp]:
-  - service tomcat stop 2>>/opt/tomcat/logs/catalina.out 1>>/opt/tomcat/logs/catalina.out
-  user: root
-
-- cmd [cp]:
-  - rm -rf /opt/tomcat/webapps/alfresco /opt/tomcat/webapps/share
-  - chown -R tomcat:tomcat /opt/tomcat/webapps/alfresco.war
-  - chown -R tomcat:tomcat /opt/tomcat/webapps/share.war
-  user: root
-
-- restartNodes [cp]
+    until [ "`/usr/bin/docker inspect -f {{.State.Running}} docker-compose_solr6_1`"=="true" ]; do
+      sleep 1
+      print '.'
+    done;
 
 startPage: share/
 
