@@ -84,7 +84,7 @@ onInstall:
       db.host=${nodes.sqldb.address}
       db.port=3306
       db.name=alfresco
-      db.driver=com.mysql.jdbc.Driver
+      db.driver=com.mysql.cj.jdbc.Driver
       db.url=jdbc:mysql://\${db.host}:\${db.port}/\${db.name}?useUnicode=yes&characterEncoding=UTF-8" >> $TOMCAT/shared/classes/alfresco-global.properties
       cp -r $ALF_TMP/keystore $TOMCAT/alf_data
       cp -r $ALF_TMP/licenses $TOMCAT
