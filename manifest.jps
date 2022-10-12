@@ -3,7 +3,8 @@ type: install
 
 id: alfresco
 name: Alfresco
-version: '5.2'
+appVersion: '7.2.1'
+version: 1.5
 
 logo: https://raw.githubusercontent.com/jelastic-jps/alfresco/master/images/view.png
 homepage: http://www.alfresco.com/
@@ -16,60 +17,83 @@ categories:
 globals:
   DB_PASS: "${fn.password(6)}"
 
-engine: openjdk8
+engine: openjdk11
 nodes:
 - cloudlets: 24
-  nodeType: tomcat8
+  nodeType: tomcat9
 - cloudlets: 8
   nodeType: mysql5
 
 onInstall:
-- prepareSqlDatabase:
-  - nodeGroup: sqldb
-    loginCredentials:
-      user: root
-      password: "${nodes.sqldb.password}"
-    newDatabaseName: alfresco
-    newDatabaseUser:
-      name: alfresco
-      password: "${globals.DB_PASS}"
-- deploy:
-  - archive: https://download.jelastic.com/public.php?service=files&t=7c0b0d8d7a5b84e4dc14a09adca692b3&download
-    name: share.war
-    context: share
-  - archive: https://download.jelastic.com/public.php?service=files&t=dff92717766644167e7d487b83040008&download
-    name: alfresco.war
-    context: alfresco
+  - prepareSqlDatabase:
+    - nodeGroup: sqldb
+      loginCredentials:
+        user: root
+        password: "${nodes.sqldb.password}"
+      newDatabaseName: alfresco
+      newDatabaseUser:
+        name: alfresco
+        password: "${globals.DB_PASS}"
+  
+  - cmd [cp]: |-
+      ALF_TMP="/tmp/alfresco/";
+      WEBAPPS="/opt/tomcat/webapps/";
+      curl -fsSL "https://download.jelastic.com/public.php?service=files&t=3456e4d6c28f318f8f980d1677ed4c20&download" -o /tmp/alfresco.zip
+      unzip /tmp/alfresco.zip -d $ALF_TMP
+      rm -rf /opt/tomcat/webapps/*
+      cp -r $ALF_TMP/web-server/webapps/* $WEBAPPS
+      chown tomcat:tomcat $WEBAPPS*.war
+      
+  - upload [cp]:
+    - sourcePath: https://download.jelastic.com/public.php?service=files&t=acf2447aa8a8f0eba5e2a07219ee5fa4&download
+      destPath: "/opt/tomcat/lib/mysql-connector-java-8.0.30.jar"
+
+  - cmd [cp]: |-
+      ALF_TMP="/tmp/alfresco/";
+      WEBAPPS="/opt/tomcat/webapps/";
+      TOMCAT="/opt/tomcat/";
+      CONF="$TOMCAT/conf";      
+      cp -r $ALF_TMP/web-server/lib/* $TOMCAT/lib/
+      cp -r $ALF_TMP/web-server/conf/Catalina/localhost/* $CONF/Catalina/localhost/
+      sed -i "s|/../modules/|/modules/|g" $CONF/Catalina/localhost/*.xml
+      
+      mkdir $TOMCAT/modules/ && mkdir $TOMCAT/modules/platform && mkdir $TOMCAT/modules/share
+      mkdir $TOMCAT/alf_data
+      mkdir $TOMCAT/shared/ && mkdir $TOMCAT/shared/classes && mkdir $TOMCAT/shared/lib/
+      echo "-Dencryption.keystore.type=JCEKS
+      -Dencryption.cipherAlgorithm=DESede/CBC/PKCS5Padding
+      -Dencryption.keyAlgorithm=DESede
+      -Dencryption.keystore.location=$TOMCAT/alf_data/keystore/metadata-keystore/keystore
+      -Dmetadata-keystore.password=mp6yc0UD9e
+      -Dmetadata-keystore.aliases=metadata
+      -Dmetadata-keystore.metadata.password=oKIWzVdEdA
+      -Dmetadata-keystore.metadata.algorithm=DESede" >> $CONF/variables.conf
+      
+      sed -i "s|shared.loader=|shared.loader=$\{catalina.base\}/shared/classes,$\{catalina.base\}/shared/lib/*.jar|g" $CONF/catalina.properties
+      cp $ALF_TMP/web-server/shared/classes/alfresco-global.properties.sample $TOMCAT/shared/classes/alfresco-global.properties
+      cp -r $ALF_TMP/web-server/shared/classes/alfresco $TOMCAT/shared/classes/
+      echo "
+      dir.root=$TOMCAT/alf_data
+      dir.keystore=\${dir.root}/keystore/metadata-keystore
+      dir.license.external=$TOMCAT/licenses
+      alfresco.secureComms=secret
+      alfresco.secureComms.secret=password
+      db.username=alfresco
+      db.password=${globals.DB_PASS}
+      db.pool.max=275
+      db.host=${nodes.sqldb.address}
+      db.port=3306
+      db.name=alfresco
+      db.driver=com.mysql.cj.jdbc.Driver
+      db.url=jdbc:mysql://\${db.host}:\${db.port}/\${db.name}?useUnicode=yes&characterEncoding=UTF-8" >> $TOMCAT/shared/classes/alfresco-global.properties
+      cp -r $ALF_TMP/keystore $TOMCAT/alf_data
+      cp -r $ALF_TMP/licenses $TOMCAT
+      echo "log4j.appender.File.File=/opt/tomcat/logs/alfresco.log" > $TOMCAT/shared/classes/alfresco/extension/custom-log4j.properties
+      
+  - restartNodes [cp]
     
-- cmd [cp]:
-  - chown tomcat:tomcat /opt/tomcat/webapps/*.war
-  - mkdir /opt/tomcat/amps_share && curl -fsSL 'https://download.jelastic.com/public.php?service=files&t=7c6d3c312c8a67f31431dd5509ef920f&download' -o /opt/tomcat/amps_share/alfresco-share-services.amp
-  - curl -fsSL 'https://download.jelastic.com/public.php?service=files&t=0e5c297ab242822230ff92e3c164478c&download' -o /opt/tomcat/bin/alfresco-mmt.jar
-  - echo '-DALFRESCO_ADDR=${nodes.mysql5.address}' >> /opt/tomcat/conf/variables.conf
-  - echo '-DALFRESCO_PASS=${globals.DB_PASS}' >> /opt/tomcat/conf/variables.conf
-
-- cmd [cp]:
-  - java -jar /opt/tomcat/bin/alfresco-mmt.jar install /opt/tomcat/amps_share/alfresco-share-services.amp /opt/tomcat/webapps/share.war
-  - java -jar /opt/tomcat/bin/alfresco-mmt.jar install /opt/tomcat/amps_share/alfresco-share-services.amp /opt/tomcat/webapps/alfresco.war
-  user: root
-
-- upload [cp]:
-  - sourcePath: http://app.jelastic.com/xssu/cross/download/QjYYHA81VwNaVlRAYAw4TUMVCRBUShURWBZsHH8iIlYQQktYDwIBQmNTTEBI
-    destPath: "/opt/tomcat/lib/mysql-connector-java-5.0.8-bin.jar"
-
-- cmd [cp]:
-  - service tomcat stop 2>>/opt/tomcat/logs/catalina.out 1>>/opt/tomcat/logs/catalina.out
-  user: root
-
-- cmd [cp]:
-  - rm -rf /opt/tomcat/webapps/alfresco /opt/tomcat/webapps/share
-  - chown -R tomcat:tomcat /opt/tomcat/webapps/alfresco.war
-  - chown -R tomcat:tomcat /opt/tomcat/webapps/share.war
-  user: root
-
-- restartNodes [cp]
-
 startPage: share/
+
 
 success: |-
   Below you will find your admin panel link, username and password.  
