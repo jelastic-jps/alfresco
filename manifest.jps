@@ -3,7 +3,7 @@ type: install
 
 id: alfresco
 name: Alfresco
-appVersion: '7.2.1'
+appVersion: '7.2.0'
 version: 1.5
 
 logo: https://raw.githubusercontent.com/jelastic-jps/alfresco/master/images/view.png
