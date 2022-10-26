@@ -57,7 +57,8 @@ onInstall:
       ALF_TMP="/tmp/alfresco/";
       WEBAPPS="/opt/tomcat/webapps/";
       TOMCAT="/opt/tomcat/";
-      CONF="$TOMCAT/conf";      
+      CONF="$TOMCAT/conf";  
+      LOGO_PATH="/opt/tomcat/webapps/alfresco/images/logo"
       cp -r $ALF_TMP/web-server/lib/* $TOMCAT/lib/
       cp -r $ALF_TMP/web-server/conf/Catalina/localhost/* $CONF/Catalina/localhost/
       sed -i "s|/../modules/|/modules/|g" $CONF/Catalina/localhost/*.xml
@@ -93,6 +94,7 @@ onInstall:
       db.url=jdbc:mysql://\${db.host}:\${db.port}/\${db.name}?useUnicode=yes&characterEncoding=UTF-8" >> $TOMCAT/shared/classes/alfresco-global.properties
       cp -r $ALF_TMP/keystore $TOMCAT/alf_data
       cp -r $ALF_TMP/licenses $TOMCAT
+      cp $LOGO_PATH/AlfrescoLogo200.png $LOGO_PATH/AlfrescoLogo.png
       echo "log4j.appender.File.File=/opt/tomcat/logs/alfresco.log" > $TOMCAT/shared/classes/alfresco/extension/custom-log4j.properties
       
   - restartNodes [cp]
