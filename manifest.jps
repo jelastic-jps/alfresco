@@ -3,7 +3,7 @@ type: install
 
 id: alfresco
 name: Alfresco
-appVersion: '7.2.1'
+appVersion: '7.2.0'
 version: 1.5
 
 logo: https://raw.githubusercontent.com/jelastic-jps/alfresco/master/images/view.png
@@ -34,7 +34,7 @@ onInstall:
       newDatabaseUser:
         name: alfresco
         password: "${globals.DB_PASS}"
-  
+    
   - cmd [cp]: |-
       ALF_TMP="/tmp/alfresco/";
       WEBAPPS="/opt/tomcat/webapps/";
@@ -44,6 +44,11 @@ onInstall:
       cp -r $ALF_TMP/web-server/webapps/* $WEBAPPS
       chown tomcat:tomcat $WEBAPPS*.war
       
+  - deploy:
+      archive: https://download.jelastic.com/public.php?service=files&t=b87b98b316e5b6670ed5185f5fb446a7&download
+      name: api-explorer.was
+      context: api-explorer
+      
   - upload [cp]:
     - sourcePath: https://download.jelastic.com/public.php?service=files&t=acf2447aa8a8f0eba5e2a07219ee5fa4&download
       destPath: "/opt/tomcat/lib/mysql-connector-java-8.0.30.jar"
@@ -52,7 +57,8 @@ onInstall:
       ALF_TMP="/tmp/alfresco/";
       WEBAPPS="/opt/tomcat/webapps/";
       TOMCAT="/opt/tomcat/";
-      CONF="$TOMCAT/conf";      
+      CONF="$TOMCAT/conf";  
+      LOGO_PATH="/opt/tomcat/webapps/alfresco/images/logo"
       cp -r $ALF_TMP/web-server/lib/* $TOMCAT/lib/
       cp -r $ALF_TMP/web-server/conf/Catalina/localhost/* $CONF/Catalina/localhost/
       sed -i "s|/../modules/|/modules/|g" $CONF/Catalina/localhost/*.xml
@@ -88,6 +94,7 @@ onInstall:
       db.url=jdbc:mysql://\${db.host}:\${db.port}/\${db.name}?useUnicode=yes&characterEncoding=UTF-8" >> $TOMCAT/shared/classes/alfresco-global.properties
       cp -r $ALF_TMP/keystore $TOMCAT/alf_data
       cp -r $ALF_TMP/licenses $TOMCAT
+      cp $LOGO_PATH/AlfrescoLogo200.png $LOGO_PATH/AlfrescoLogo.png
       echo "log4j.appender.File.File=/opt/tomcat/logs/alfresco.log" > $TOMCAT/shared/classes/alfresco/extension/custom-log4j.properties
       
   - restartNodes [cp]
