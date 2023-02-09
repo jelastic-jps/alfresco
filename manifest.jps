@@ -41,7 +41,8 @@ onInstall:
       curl -fsSL "https://download.jelastic.com/public.php?service=files&t=3456e4d6c28f318f8f980d1677ed4c20&download" -o /tmp/alfresco.zip
       unzip /tmp/alfresco.zip -d $ALF_TMP
       rm -rf /opt/tomcat/webapps/*
-      cp -r $ALF_TMP/web-server/webapps/* $WEBAPPS
+      cp -r $ALF_TMP/web-server/webapps/alfresco.war $WEBAPPS
+      cp -r $ALF_TMP/web-server/webapps/ROOT.war $WEBAPPS
       chown tomcat:tomcat $WEBAPPS*.war
       
   - deploy:
@@ -76,6 +77,7 @@ onInstall:
       -Dmetadata-keystore.metadata.algorithm=DESede" >> $CONF/variables.conf
       
       sed -i "s|shared.loader=|shared.loader=$\{catalina.base\}/shared/classes,$\{catalina.base\}/shared/lib/*.jar|g" $CONF/catalina.properties
+      cp -r $ALF_TMP/web-server/webapps/share.war $WEBAPPS
       cp $ALF_TMP/web-server/shared/classes/alfresco-global.properties.sample $TOMCAT/shared/classes/alfresco-global.properties
       cp -r $ALF_TMP/web-server/shared/classes/alfresco $TOMCAT/shared/classes/
       echo "
