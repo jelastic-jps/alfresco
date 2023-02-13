@@ -38,7 +38,7 @@ onInstall:
   - cmd [cp]: |-
       ALF_TMP="/tmp/alfresco/";
       WEBAPPS="/opt/tomcat/webapps/";
-      curl -fsSL "https://download.jelastic.com/public.php?service=files&t=3456e4d6c28f318f8f980d1677ed4c20&download" -o /tmp/alfresco.zip
+      curl -fsSL "https://download.jelastic.com/public.php?service=files&t=a0f7ae237f4d307fd41bfba99b053ed2&download" -o /tmp/alfresco.zip
       unzip /tmp/alfresco.zip -d $ALF_TMP
       rm -rf /opt/tomcat/webapps/*
       
