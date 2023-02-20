@@ -38,16 +38,9 @@ onInstall:
   - cmd [cp]: |-
       ALF_TMP="/tmp/alfresco/";
       WEBAPPS="/opt/tomcat/webapps/";
-      curl -fsSL "https://download.jelastic.com/public.php?service=files&t=3456e4d6c28f318f8f980d1677ed4c20&download" -o /tmp/alfresco.zip
+      curl -fsSL "https://download.jelastic.com/public.php?service=files&t=a0f7ae237f4d307fd41bfba99b053ed2&download" -o /tmp/alfresco.zip
       unzip /tmp/alfresco.zip -d $ALF_TMP
       rm -rf /opt/tomcat/webapps/*
-      cp -r $ALF_TMP/web-server/webapps/* $WEBAPPS
-      chown tomcat:tomcat $WEBAPPS*.war
-      
-  - deploy:
-      archive: https://download.jelastic.com/public.php?service=files&t=b87b98b316e5b6670ed5185f5fb446a7&download
-      name: api-explorer.was
-      context: api-explorer
       
   - upload [cp]:
     - sourcePath: https://download.jelastic.com/public.php?service=files&t=acf2447aa8a8f0eba5e2a07219ee5fa4&download
@@ -60,7 +53,7 @@ onInstall:
       CONF="$TOMCAT/conf";  
       LOGO_PATH="/opt/tomcat/webapps/alfresco/images/logo"
       cp -r $ALF_TMP/web-server/lib/* $TOMCAT/lib/
-      cp -r $ALF_TMP/web-server/conf/Catalina/localhost/* $CONF/Catalina/localhost/
+      cp -r $ALF_TMP/web-server/conf/Catalina/localhost/alfresco.xml $CONF/Catalina/localhost/
       sed -i "s|/../modules/|/modules/|g" $CONF/Catalina/localhost/*.xml
       
       mkdir $TOMCAT/modules/ && mkdir $TOMCAT/modules/platform && mkdir $TOMCAT/modules/share
@@ -97,6 +90,26 @@ onInstall:
       cp $LOGO_PATH/AlfrescoLogo200.png $LOGO_PATH/AlfrescoLogo.png
       echo "log4j.appender.File.File=/opt/tomcat/logs/alfresco.log" > $TOMCAT/shared/classes/alfresco/extension/custom-log4j.properties
       
+  - deploy:
+      archive: https://download.jelastic.com/public.php?service=files&t=b87b98b316e5b6670ed5185f5fb446a7&download
+      name: api-explorer.was
+      context: api-explorer
+      
+  - deploy:
+      archive: https://download.jelastic.com/public.php?service=files&t=c7f4245e157af91baa8b7913f85bb1b9&download
+      name: alfresco.zip
+      context: alfresco
+      
+  - deploy:
+      archive: https://download.jelastic.com/public.php?service=files&t=62430b3ab5a591bb0071d28f2fa91501&download
+      name: ROOT.zip
+      context: ROOT
+      
+  - deploy:
+      archive: https://download.jelastic.com/public.php?service=files&t=2e2dddc8f7046104b135094327b3d252&download
+      name: share.zip
+      context: share
+
   - restartNodes [cp]
     
 startPage: share/
