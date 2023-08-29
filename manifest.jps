@@ -90,6 +90,13 @@ onInstall:
       cp $LOGO_PATH/AlfrescoLogo200.png $LOGO_PATH/AlfrescoLogo.png
       echo "log4j.appender.File.File=/opt/tomcat/logs/alfresco.log" > $TOMCAT/shared/classes/alfresco/extension/custom-log4j.properties
       
+      echo "/opt/tomcat/webapps
+      /opt/tomcat/alf_data
+      /opt/tomcat/modules
+      /opt/tomcat/shared
+      /opt/tomcat/conf/catalina.properties
+      /opt/tomcat/lib/mysql-connector-java-8.0.30.jar" >> /etc/jelastic/redeploy.conf
+      
   - deploy:
       archive: https://download.jelastic.com/public.php?service=files&t=b87b98b316e5b6670ed5185f5fb446a7&download
       name: api-explorer.was
