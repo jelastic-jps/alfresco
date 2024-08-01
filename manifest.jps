@@ -22,7 +22,7 @@ nodes:
 - cloudlets: 24
   nodeType: tomcat9
 - cloudlets: 8
-  nodeType: mysql106
+  nodeType: mysql8
 
 onInstall:
   - prepareSqlDatabase:
