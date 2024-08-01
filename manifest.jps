@@ -15,7 +15,7 @@ categories:
 - apps/content-management
 
 globals:
-  DB_PASS: "${fn.password(6)}"
+  DB_PASS: "${fn.password(10)}"
 
 engine: openjdk11
 nodes:
