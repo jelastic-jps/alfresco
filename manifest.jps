@@ -17,10 +17,10 @@ categories:
 globals:
   DB_PASS: "${fn.password(10)}"
 
-engine: openjdk11
+engine: openjdk17
 nodes:
 - cloudlets: 24
-  nodeType: tomcat9
+  nodeType: tomcat10
 - cloudlets: 8
   nodeType: mysql8
 
@@ -53,7 +53,7 @@ onInstall:
       CONF="$TOMCAT/conf";  
       LOGO_PATH="/opt/tomcat/webapps/alfresco/images/logo"
       cp -r $ALF_TMP/web-server/lib/* $TOMCAT/lib/
-      cp -r $ALF_TMP/web-server/conf/Catalina/localhost/alfresco.xml $CONF/Catalina/localhost/
+      cp -r $ALF_TMP/web-server/conf/Catalina/localhost/* $CONF/Catalina/localhost/
       sed -i "s|/../modules/|/modules/|g" $CONF/Catalina/localhost/*.xml
       
       mkdir $TOMCAT/modules/ && mkdir $TOMCAT/modules/platform && mkdir $TOMCAT/modules/share
@@ -98,9 +98,9 @@ onInstall:
       /opt/tomcat/lib/mysql-connector-java-8.0.30.jar" >> /etc/jelastic/redeploy.conf
       
   - deploy:
-      archive: https://download.jelastic.com/public.php?service=files&t=b87b98b316e5b6670ed5185f5fb446a7&download
-      name: api-explorer.was
-      context: api-explorer
+      archive: https://download.jelastic.com/public.php?service=files&t=111f5a5ff41624b1c268f9952ed2595c&download
+      name: vti_bin.zip
+      context: vti_bin
       
   - deploy:
       archive: https://download.jelastic.com/public.php?service=files&t=838862ffa984671ac336a9a309a00168&download
