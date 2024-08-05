@@ -103,17 +103,17 @@ onInstall:
       context: api-explorer
       
   - deploy:
-      archive: https://download.jelastic.com/public.php?service=files&t=c7f4245e157af91baa8b7913f85bb1b9&download
+      archive: https://download.jelastic.com/public.php?service=files&t=838862ffa984671ac336a9a309a00168&download
       name: alfresco.zip
       context: alfresco
       
   - deploy:
-      archive: https://download.jelastic.com/public.php?service=files&t=62430b3ab5a591bb0071d28f2fa91501&download
+      archive: https://download.jelastic.com/public.php?service=files&t=be1abe67e9c0570a840892b2e2da3e60&download
       name: ROOT.zip
       context: ROOT
       
   - deploy:
-      archive: https://download.jelastic.com/public.php?service=files&t=2e2dddc8f7046104b135094327b3d252&download
+      archive: https://download.jelastic.com/public.php?service=files&t=a842f2fc216c8bca096f6033196653f5&download
       name: share.zip
       context: share
 
