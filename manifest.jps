@@ -3,7 +3,7 @@ type: install
 
 id: alfresco
 name: Alfresco
-appVersion: '7.2.0'
+appVersion: '23.2.1'
 version: 1.5
 
 logo: https://raw.githubusercontent.com/jelastic-jps/alfresco/master/images/view.png
@@ -15,14 +15,14 @@ categories:
 - apps/content-management
 
 globals:
-  DB_PASS: "${fn.password(6)}"
+  DB_PASS: "${fn.password(10)}"
 
-engine: openjdk11
+engine: openjdk17
 nodes:
 - cloudlets: 24
-  nodeType: tomcat9
+  nodeType: tomcat10
 - cloudlets: 8
-  nodeType: mysql5
+  nodeType: mysql8
 
 onInstall:
   - prepareSqlDatabase:
@@ -38,7 +38,7 @@ onInstall:
   - cmd [cp]: |-
       ALF_TMP="/tmp/alfresco/";
       WEBAPPS="/opt/tomcat/webapps/";
-      curl -fsSL "https://download.jelastic.com/public.php?service=files&t=a0f7ae237f4d307fd41bfba99b053ed2&download" -o /tmp/alfresco.zip
+      curl -fsSL "https://download.jelastic.com/public.php?service=files&t=87a9baacdf9f75bc8b2c9b8e15e7aefa&download" -o /tmp/alfresco.zip
       unzip /tmp/alfresco.zip -d $ALF_TMP
       rm -rf /opt/tomcat/webapps/*
       
@@ -53,7 +53,7 @@ onInstall:
       CONF="$TOMCAT/conf";  
       LOGO_PATH="/opt/tomcat/webapps/alfresco/images/logo"
       cp -r $ALF_TMP/web-server/lib/* $TOMCAT/lib/
-      cp -r $ALF_TMP/web-server/conf/Catalina/localhost/alfresco.xml $CONF/Catalina/localhost/
+      cp -r $ALF_TMP/web-server/conf/Catalina/localhost/* $CONF/Catalina/localhost/
       sed -i "s|/../modules/|/modules/|g" $CONF/Catalina/localhost/*.xml
       
       mkdir $TOMCAT/modules/ && mkdir $TOMCAT/modules/platform && mkdir $TOMCAT/modules/share
@@ -98,22 +98,22 @@ onInstall:
       /opt/tomcat/lib/mysql-connector-java-8.0.30.jar" >> /etc/jelastic/redeploy.conf
       
   - deploy:
-      archive: https://download.jelastic.com/public.php?service=files&t=b87b98b316e5b6670ed5185f5fb446a7&download
-      name: api-explorer.was
-      context: api-explorer
+      archive: https://download.jelastic.com/public.php?service=files&t=111f5a5ff41624b1c268f9952ed2595c&download
+      name: vti_bin.zip
+      context: vti_bin
       
   - deploy:
-      archive: https://download.jelastic.com/public.php?service=files&t=c7f4245e157af91baa8b7913f85bb1b9&download
+      archive: https://download.jelastic.com/public.php?service=files&t=838862ffa984671ac336a9a309a00168&download
       name: alfresco.zip
       context: alfresco
       
   - deploy:
-      archive: https://download.jelastic.com/public.php?service=files&t=62430b3ab5a591bb0071d28f2fa91501&download
+      archive: https://download.jelastic.com/public.php?service=files&t=be1abe67e9c0570a840892b2e2da3e60&download
       name: ROOT.zip
       context: ROOT
       
   - deploy:
-      archive: https://download.jelastic.com/public.php?service=files&t=2e2dddc8f7046104b135094327b3d252&download
+      archive: https://download.jelastic.com/public.php?service=files&t=a842f2fc216c8bca096f6033196653f5&download
       name: share.zip
       context: share
 
