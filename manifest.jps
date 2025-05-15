@@ -17,6 +17,9 @@ categories:
 globals:
   DB_PASS: "${fn.password(10)}"
 
+ssl: true
+skipNodeEmails: true
+
 engine: openjdk17
 nodes:
 - cloudlets: 24
@@ -25,16 +28,11 @@ nodes:
   nodeType: mysql8
 
 onInstall:
-  - prepareSqlDatabase:
-    - nodeGroup: sqldb
-      loginCredentials:
-        user: root
-        password: "${nodes.sqldb.password}"
-      newDatabaseName: alfresco
-      newDatabaseUser:
-        name: alfresco
-        password: "${globals.DB_PASS}"
-    
+  - cmd[sqldb]: |-
+      MYSQL_PWD=${nodes.sqldb.password} mysql -uroot -e "CREATE DATABASE alfresco;"
+      MYSQL_PWD=${nodes.sqldb.password} mysql -uroot -e "CREATE USER 'alfresco'@'%' IDENTIFIED BY '${globals.DB_PASS}';"
+      MYSQL_PWD=${nodes.sqldb.password} mysql -uroot -e "GRANT ALL PRIVILEGES ON alfresco.* TO 'alfresco'@'%' WITH GRANT OPTION;"
+
   - cmd [cp]: |-
       ALF_TMP="/tmp/alfresco/";
       WEBAPPS="/opt/tomcat/webapps/";
